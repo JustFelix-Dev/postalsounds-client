@@ -37,7 +37,7 @@ export default function Index() {
         <div className="flex flex-col sm:flex-row gap-4 pt-12 justify-center">
           <Button
             size="lg"
-            className="rounded-full px-8 py-6 text-base font-semibold bg-white text-black"
+            className="rounded-full px-8 py-6 text-base font-semibold bg-white text-black hover:bg-white/70 cursor-pointer"
             onClick={() => router.push("/register")}
           >
             Get Started
