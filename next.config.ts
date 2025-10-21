@@ -1,7 +1,14 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  /* config options here */
+  images: {
+    remotePatterns: [
+      {
+        protocol: "https",
+        hostname: "stunning-cactus-ffe5506078.media.strapiapp.com",
+      },
+    ],
+  },
 };
 
 export default nextConfig;

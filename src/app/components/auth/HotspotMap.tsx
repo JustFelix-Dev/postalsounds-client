@@ -1,49 +1,76 @@
-// components/HotspotMap.tsx
 "use client";
-
-import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";
-import L from "leaflet";
-
-const defaultIcon = L.icon({
-  iconUrl: "https://unpkg.com/leaflet@1.9.3/dist/images/marker-icon.png",
-  iconSize: [25, 41],
-  iconAnchor: [12, 41],
-});
+import "mapbox-gl/dist/mapbox-gl.css";
+import Map, { Marker, Popup } from "react-map-gl/mapbox";
+import { useState } from "react";
+import Image from "next/image";
+import { MapPin } from "lucide-react";
 
 interface Hotspot {
   title: string;
   short_description: string;
   location_lat: number;
   location_lng: number;
+  image?: string;
 }
 
-interface HotspotMapProps {
-  hotspots: Hotspot[];
-}
+export default function HotspotMap({ hotspots }: { hotspots: Hotspot[] }) {
+  const [selected, setSelected] = useState<Hotspot | null>(null);
 
-export default function HotspotMap({ hotspots }: HotspotMapProps) {
   return (
-    <MapContainer
-      center={[40.4168, -3.7038]} // Madrid center
-      zoom={12}
-      style={{ height: "500px", width: "100%", borderRadius: "12px" }}
-    >
-      <TileLayer
-        url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-        attribution="© OpenStreetMap contributors"
-      />
-      {hotspots.map((spot, i) => (
-        <Marker
-          key={i}
-          position={[spot.location_lat, spot.location_lng]}
-          icon={defaultIcon}
-        >
-          <Popup>
-            <strong>{spot.title}</strong>
-            <p>{spot.short_description}</p>
+    <div className="w-full h-screen rounded-xl overflow-hidden">
+      <Map
+        initialViewState={{
+          longitude: -3.7038,
+          latitude: 40.4168,
+          zoom: 12,
+        }}
+        style={{ width: "100%", height: "100%" }}
+        mapStyle="mapbox://styles/mapbox/streets-v12"
+        mapboxAccessToken={process.env.NEXT_PUBLIC_MAPBOX_TOKEN}
+      >
+        {hotspots.map((spot, i) => (
+          <Marker
+            key={i}
+            longitude={spot.location_lng}
+            latitude={spot.location_lat}
+            anchor="bottom"
+          >
+            {/* Wrap the icon in a div and handle clicks here */}
+            <div onClick={() => setSelected(spot)} className="cursor-pointer">
+              <MapPin
+                size={28}
+                className="text-orange-900 drop-shadow"
+                strokeWidth={1}
+                style={{ fill: "#7e2a0c" }}
+              />
+            </div>
+          </Marker>
+        ))}
+
+        {selected && (
+          <Popup
+            longitude={selected.location_lng}
+            latitude={selected.location_lat}
+            onClose={() => setSelected(null)}
+            closeOnClick={false} // optional: keep open until user closes
+            anchor="top"
+          >
+            <div className="w-48">
+              {selected.image && (
+                <Image
+                  src={selected.image}
+                  alt={selected.title}
+                  className="rounded-md mb-2 w-full h-24 object-cover"
+                  width={200}
+                  height={120}
+                />
+              )}
+              <strong>{selected.title}</strong>
+              <p className="text-sm">{selected.short_description}</p>
+            </div>
           </Popup>
-        </Marker>
-      ))}
-    </MapContainer>
+        )}
+      </Map>
+    </div>
   );
 }

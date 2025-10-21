@@ -3,14 +3,17 @@
 import { useEffect, useState } from "react";
 import HotspotMap from "../components/auth/HotspotMap";
 
+interface HotspotImage {
+  url: string;
+}
+
 interface HotspotData {
     id: number;
-    attributes: {
-      title: string;
-      short_description: string;
-      location_lat: number;
-      location_lng: number;
-    };
+    title: string;
+    short_description: string;
+    location_lat: number;
+    location_lng: number;
+    images: HotspotImage[];
   }
 export default function HotspotsPage() {
   const [hotspots, setHotspots] = useState([]);
@@ -18,15 +21,18 @@ export default function HotspotsPage() {
 
   useEffect(() => {
     const fetchHotspots = async () => {
-      const res = await fetch(`${process.env.NEXT_PUBLIC_STRAPI_URL}/api/hotspots`);
-      const { data } = await res.json();
+      const res = await fetch(`${process.env.NEXT_PUBLIC_STRAPI_API}/api/hotspots?populate=*`);
+      console.log('Response:', res);
+      const  data  = await res.json();
+      console.log('Data:', data)
       setHotspots(
-        data.map((item: HotspotData ) => ({
+        data?.data?.map((item: HotspotData ) => ({
           id: item.id,
-          title: item.attributes.title,
-          short_description: item.attributes.short_description,
-          location_lat: item.attributes.location_lat,
-          location_lng: item.attributes.location_lng,
+          title: item.title,
+          short_description: item.short_description,
+          location_lat: item.location_lat,
+          location_lng: item.location_lng,
+          image: item.images[0].url
         }))
       );
       setLoading(false);
