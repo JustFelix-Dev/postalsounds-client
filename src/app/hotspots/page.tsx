@@ -69,7 +69,7 @@ export default function HotspotsPage() {
   }, []);
 
 
-//   console.log("User", user)
+  console.log("User", hotspots)
 
   return (
     <main className="p-6 relative">
