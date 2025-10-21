@@ -1,14 +1,16 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import { Plus_Jakarta_Sans, Geist_Mono } from "next/font/google"; // import your font
 import "./globals.css";
 import 'leaflet/dist/leaflet.css';
 
-
-const geistSans = Geist({
-  variable: "--font-geist-sans",
+// Plus Jakarta Sans font
+const jakartaSans = Plus_Jakarta_Sans({
+  variable: "--font-sans",
   subsets: ["latin"],
+  weight: ["400", "500", "600", "700"], // optional: choose weights you need
 });
 
+// Optional: keep Geist Mono if you want monospace somewhere
 const geistMono = Geist_Mono({
   variable: "--font-geist-mono",
   subsets: ["latin"],
@@ -27,7 +29,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+        className={`${jakartaSans.variable}  antialiased`}
       >
         {children}
       </body>
